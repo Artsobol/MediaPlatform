@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: media-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/media_service
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
