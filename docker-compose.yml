@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: media-service/Dockerfile
+    env_file:
+      - .env
+    environment:
+      MEDIA_SERVICE_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${MEDIA_SERVICE_DB:-media_service}
+      MEDIA_SERVICE_DATASOURCE_USER: ${MEDIA_SERVICE_USER:-media_service_user}
+      MEDIA_SERVICE_DATASOURCE_PASSWORD: ${MEDIA_SERVICE_PASSWORD:-media_service_password}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:18-alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${DB_NAME:-media_platform}
+      POSTGRES_USER: ${DB_USERNAME:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
+      MEDIA_SERVICE_DB: ${MEDIA_SERVICE_DB:-media_service}
+      MEDIA_SERVICE_USER: ${MEDIA_SERVICE_USER:-media_service_user}
+      MEDIA_SERVICE_PASSWORD: ${MEDIA_SERVICE_PASSWORD:-media_service_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  postgres_data:
