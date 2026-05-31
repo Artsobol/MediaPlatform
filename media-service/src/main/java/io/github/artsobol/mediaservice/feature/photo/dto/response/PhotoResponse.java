@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public record PhotoResponse(
         Long id,
-        String originalImageKey,
+        String url,
         String title,
         String description,
         LocalDate photoDate,

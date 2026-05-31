@@ -10,12 +10,12 @@ import org.mapstruct.Mapping;
 @Mapper(config = MapStructConfig.class)
 public interface PhotoMapper {
 
-    @BeanMapping(ignoreByDefault = true)
+    @BeanMapping(ignoreByDefault = true, ignoreUnmappedSourceProperties = "originalImageKey")
     @Mapping(target = "id")
     @Mapping(target = "title")
     @Mapping(target = "description")
-    @Mapping(target = "originalImageKey")
     @Mapping(target = "photoDate")
     @Mapping(target = "photoStatus")
-    PhotoResponse toResponse(Photo entity);
+    @Mapping(target = "url")
+    PhotoResponse toResponse(Photo entity, String url);
 }

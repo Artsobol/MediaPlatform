@@ -1,22 +1,30 @@
 services:
-  app:
+  media-service:
     build:
       context: .
       dockerfile: media-service/Dockerfile
+    container_name: media-service
     env_file:
       - .env
     environment:
       MEDIA_SERVICE_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${MEDIA_SERVICE_DB:-media_service}
       MEDIA_SERVICE_DATASOURCE_USER: ${MEDIA_SERVICE_USER:-media_service_user}
       MEDIA_SERVICE_DATASOURCE_PASSWORD: ${MEDIA_SERVICE_PASSWORD:-media_service_password}
+      APP_MINIO_ENDPOINT: http://minio:9000
+      APP_MINIO_ACCESS_KEY: ${MINIO_ROOT_USER:-admin}
+      APP_MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-adminadmin}
+      APP_MINIO_BUCKET: ${MINIO_BUCKET:-photos}
     ports:
       - "8080:8080"
     depends_on:
       postgres:
         condition: service_healthy
+      minio:
+        condition: service_healthy
 
   postgres:
     image: postgres:18-alpine
+    container_name: postgres
     env_file:
       - .env
     environment:
@@ -35,5 +43,26 @@ services:
       timeout: 5s
       retries: 20
 
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1
+    container_name: minio
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-admin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-adminadmin}
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
 volumes:
   postgres_data:
+  minio_data:

@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.List;
@@ -29,7 +31,7 @@ public class PhotoController {
     private final PhotoService photoService;
 
     @GetMapping("/{photoId}")
-    public PhotoResponse getById(@PathVariable @Positive Long photoId) {
+    public PhotoResponse getById(@PathVariable("photoId") @Positive Long photoId) {
         return photoService.getById(photoId);
     }
 
@@ -39,8 +41,11 @@ public class PhotoController {
     }
 
     @PostMapping
-    public ResponseEntity<PhotoResponse> create(@RequestBody @Valid PhotoCreateRequest photoCreateRequest) {
-        PhotoResponse response = photoService.create(photoCreateRequest);
+    public ResponseEntity<PhotoResponse> create(
+            @RequestPart("metadata") @Valid PhotoCreateRequest photoCreateRequest,
+            @RequestPart("file") MultipartFile photoFile
+    ) {
+        PhotoResponse response = photoService.create(photoCreateRequest, photoFile);
         URI location = URI.create("/api/v1/photos/" + response.id());
 
         return ResponseEntity.created(location).body(response);
@@ -48,7 +53,7 @@ public class PhotoController {
 
     @PatchMapping("/{photoId}")
     public PhotoResponse partiallyUpdate(
-            @PathVariable @Positive Long photoId,
+            @PathVariable("photoId") @Positive Long photoId,
             @RequestBody @Valid PhotoUpdateRequest photoUpdateRequest
     ) {
         return photoService.updateBody(photoId, photoUpdateRequest);
