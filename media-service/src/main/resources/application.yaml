@@ -3,9 +3,9 @@ spring:
     name: media-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/media_service
-    username: postgres
-    password: postgres
+    url: ${MEDIA_SERVICE_DATASOURCE_URL:jdbc:postgresql://localhost:5432/media_service}
+    username: ${MEDIA_SERVICE_DATASOURCE_USER:media_service_user}
+    password: ${MEDIA_SERVICE_DATASOURCE_PASSWORD:media_service_password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
