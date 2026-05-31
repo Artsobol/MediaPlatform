@@ -6,16 +6,16 @@ Media Platform - учебный микросервисный проект для
 
 ## Текущий статус
 
-Реализован базовый `media-service` для работы с карточками фото:
+`media-service` умеет:
 
-- создание карточки фото;
-- получение фото по id;
-- получение списка фото;
-- частичное обновление `title`, `description` и `photoDate`;
-- хранение статуса фото;
-- схема БД через Liquibase.
+- хранить метаданные фото в PostgreSQL;
+- загружать оригиналы фото в MinIO;
+- получать фото по id и списком;
+- частично обновлять данные фото;
+- управлять схемой БД через Liquibase;
+- запускаться локально через Docker Compose.
 
-Загрузка файлов, файловое хранилище, обработка изображений, авторизация, API Gateway и Docker Compose пока не реализованы.
+Обработка изображений, авторизация, API Gateway и отдельные сервисы обработки пока не реализованы.
 
 ## Технологии
 
@@ -26,102 +26,55 @@ Media Platform - учебный микросервисный проект для
 - Spring Data JPA
 - PostgreSQL
 - Liquibase
+- MinIO
 - MapStruct
 - Lombok
+- Docker Compose
 
 ## Структура проекта
 
 ```text
 .
+├── docker
+├── docs
+├── media-service
+├── docker-compose.yml
 ├── pom.xml
 ├── README.md
 ├── PLANS.md
-├── code_review.md
-└── media-service
-    ├── pom.xml
-    └── src
-        ├── main
-        │   ├── java/io/github/artsobol/mediaservice
-        │   │   ├── config
-        │   │   ├── exception
-        │   │   └── feature/photo
-        │   └── resources
-        │       ├── application.yaml
-        │       └── db/changelog
-        └── test
+└── code_review.md
 ```
 
-## media-service
+## Документация
 
-`media-service` отвечает за метаданные фото. Сейчас сервис работает с таблицей `photos`.
+- [Локальный запуск](docs/local-development.md)
+- [API media-service](docs/api.md)
 
-Основные поля фото:
-
-- `id`;
-- `originalImageKey`;
-- `title`;
-- `description`;
-- `photoDate`;
-- `photoStatus`.
-
-Статусы фото описаны в `PhotoStatus`.
-
-## API
-
-Базовый путь контроллера:
-
-```text
-/photos
-```
-
-Доступные методы:
-
-```text
-GET    /photos
-GET    /photos/{photoId}
-POST   /photos
-PATCH  /photos/{photoId}
-```
-
-Swagger/OpenAPI в проект пока не добавлен.
-
-## Локальный запуск
-
-Для запуска нужен PostgreSQL.
-
-Текущие настройки подключения находятся в `media-service/src/main/resources/application.yaml`:
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5433/media_service
-    username: postgres
-    password: postgres
-```
-
-Перед запуском создай локальную БД:
-
-```sql
-CREATE DATABASE media_service;
-```
-
-Запуск сервиса:
+## Быстрый запуск
 
 ```bash
-mvn -pl media-service spring-boot:run
+cp .env.example .env
+docker compose up -d --build
 ```
 
-По умолчанию Spring Boot запустит приложение на порту `8080`, если порт не переопределен через конфигурацию.
+Основные адреса:
+
+```text
+media-service: http://localhost:8080
+MinIO Console: http://localhost:9001
+```
 
 ## Проверки
-
-Минимальная проверка проекта:
 
 ```bash
 mvn test
 ```
 
-Если локальная PostgreSQL не запущена или база `media_service` не создана, тест `contextLoads` может упасть при поднятии Spring context.
+Для сборки только `media-service`:
+
+```bash
+mvn -pl media-service -am clean package -DskipTests
+```
 
 ## Планируемое развитие
 
