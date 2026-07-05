@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,5 +58,14 @@ public class PhotoController {
             @RequestBody @Valid PhotoUpdateRequest photoUpdateRequest
     ) {
         return photoService.updateBody(photoId, photoUpdateRequest);
+    }
+
+    @DeleteMapping("/{photoId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable("photoId") @Positive Long photoId
+    ) {
+        photoService.delete(photoId);
+
+        return ResponseEntity.noContent().build();
     }
 }

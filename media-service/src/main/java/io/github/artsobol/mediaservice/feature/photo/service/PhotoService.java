@@ -16,4 +16,6 @@ public interface PhotoService {
     List<PhotoResponse> getAll();
 
     PhotoResponse updateBody(Long photoId, PhotoUpdateRequest photoUpdateRequest);
+
+    void delete(Long photoId);
 }

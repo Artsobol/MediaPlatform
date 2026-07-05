@@ -61,6 +61,9 @@ public class Photo {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    @Column(name = "deleted_at")
+    private Instant deletedAt;
+
     public static Photo create() {
         Photo entity = new Photo();
         entity.photoStatus = PhotoStatus.PENDING_UPLOAD;
@@ -106,6 +109,13 @@ public class Photo {
             throw new IllegalArgumentException("originalImageKey must not be blank");
         }
         this.originalImageKey = originalImageKey;
+    }
+
+    public void delete() {
+        if (this.deletedAt != null) {
+            throw new IllegalStateException("entity already is deleted");
+        }
+        this.deletedAt = Instant.now();
     }
 
     public void failUpload() {

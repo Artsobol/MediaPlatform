@@ -11,4 +11,10 @@
         <tagDatabase tag="v.0.0.1"/>
     </changeSet>
 
+    <include file="002-update-photos.xml" relativeToChangelogFile="true"/>
+
+    <changeSet id="add-deleted-at-field" author="">
+        <tagDatabase tag="v.0.0.2"/>
+    </changeSet>
+
 </databaseChangeLog>

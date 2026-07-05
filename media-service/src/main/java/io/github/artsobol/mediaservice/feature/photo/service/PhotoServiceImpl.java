@@ -68,7 +68,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
     @Transactional(readOnly = true)
     public List<PhotoResponse> getAll() {
         log.debug("Fetching all photos");
-        return photoRepository.findAll().stream().map(this::getResponseWithUrl).toList();
+        return photoRepository.findAllActive().stream().map(this::getResponseWithUrl).toList();
     }
 
     @Override
@@ -84,11 +84,22 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
     }
 
     @Override
+    @Transactional
+    public void delete(Long photoId) {
+        log.info("Deleting photo: photoId={}", photoId);
+        Photo entity = getByIdOrThrow(photoId);
+        entity.delete();
+        log.info("Photo deleted: photoId={}", photoId);
+    }
+
+    @Override
     public Photo getByIdOrThrow(Long photoId) {
         log.debug("Fetching photo: photoId={}", photoId);
-        return photoRepository.findById(photoId)
+        return photoRepository.findActiveById(photoId)
                 .orElseThrow(() -> new NotFoundException("Photo with id=" + photoId + "  not found"));
     }
+
+
 
     private PhotoResponse getResponseWithUrl(Photo entity) {
         log.debug("Fetching permanent photo url: photoId={}", entity.getId());
