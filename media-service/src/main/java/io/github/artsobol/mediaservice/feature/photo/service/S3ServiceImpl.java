@@ -8,18 +8,28 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import io.minio.errors.MinioException;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 @Service
-@RequiredArgsConstructor
 public class S3ServiceImpl implements S3Service {
 
     private final MinioClient minioClient;
+    private final MinioClient publicMinioClient;
     private final MinioProperties properties;
+
+    public S3ServiceImpl(
+            @Qualifier("minioClient") MinioClient minioClient,
+            @Qualifier("publicMinioClient") MinioClient publicMinioClient,
+            MinioProperties properties
+    ) {
+        this.minioClient = minioClient;
+        this.publicMinioClient = publicMinioClient;
+        this.properties = properties;
+    }
 
     public void upload(String objectKey, MultipartFile file) {
         try {
@@ -36,7 +46,7 @@ public class S3ServiceImpl implements S3Service {
 
     public String getPermanentUrl(String objectKey) {
         try {
-            return minioClient.getPresignedObjectUrl(
+            return publicMinioClient.getPresignedObjectUrl(
                     GetPresignedObjectUrlArgs.builder()
                             .method(Http.Method.GET)
                             .bucket(properties.bucket())

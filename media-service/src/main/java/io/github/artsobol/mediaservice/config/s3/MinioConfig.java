@@ -11,6 +11,16 @@ public class MinioConfig{
     public MinioClient minioClient(MinioProperties properties) {
         return MinioClient.builder()
                 .endpoint(properties.endpoint())
+                .region(properties.region())
+                .credentials(properties.accessKey(), properties.secretKey())
+                .build();
+    }
+
+    @Bean
+    public MinioClient publicMinioClient(MinioProperties properties) {
+        return MinioClient.builder()
+                .endpoint(properties.publicEndpoint())
+                .region(properties.region())
                 .credentials(properties.accessKey(), properties.secretKey())
                 .build();
     }

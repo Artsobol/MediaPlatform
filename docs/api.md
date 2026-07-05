@@ -44,4 +44,4 @@ curl -X POST http://localhost:8080/photos \
   -F "file=@cat.jpg;type=image/jpeg"
 ```
 
-При локальном запуске через Docker ссылка на файл может содержать host `minio`, потому что presigned URL генерируется внутри Docker-сети.
+При локальном запуске через Docker presigned URL генерируется с `APP_MINIO_PUBLIC_ENDPOINT`, чтобы ссылка открывалась из браузера.
