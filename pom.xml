@@ -76,6 +76,25 @@
                     <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
                 </configuration>
             </plugin>
+
+            <!-- Checkstyle -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.6.0</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>com.puppycrawl.tools</groupId>
+                        <artifactId>checkstyle</artifactId>
+                        <version>13.7.0</version>
+                    </dependency>
+                </dependencies>
+
+                <configuration>
+                    <configLocation>config/checkstyle/checkstyle.xml</configLocation>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
