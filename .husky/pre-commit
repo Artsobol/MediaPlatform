@@ -1,3 +1,7 @@
-sh scripts/check-staged-files.sh
+sh scripts/prevent-main-commit.sh
+sh scripts/check-branch-name.sh
+bash scripts/check-staged-files.sh
+bash scripts/check-conflict-marker.sh
+bash scripts/check-debug-output.sh
 gitleaks protect --staged --verbose
 mvn test
