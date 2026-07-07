@@ -19,7 +19,7 @@
         <sonar.organization>artsobol</sonar.organization>
         <sonar.projectKey>Artsobol_MediaPlatform</sonar.projectKey>
         <java.version>25</java.version>
-        <spring.boot.version>4.0.6</spring.boot.version>
+        <spring.boot.version>4.1.0</spring.boot.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
