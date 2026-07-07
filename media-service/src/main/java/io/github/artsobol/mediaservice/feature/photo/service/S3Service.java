@@ -4,9 +4,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface S3Service {
 
-    void upload(String objectKey, MultipartFile file);
+  void upload(String objectKey, MultipartFile file);
 
-    String getPermanentUrl(String objectKey);
+  String getPermanentUrl(String objectKey);
 
-    void delete(String objectKey);
+  void delete(String objectKey);
 }

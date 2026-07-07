@@ -8,8 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 @ConfigurationPropertiesScan
 public class MediaServiceApplication {
 
-    static void main(String[] args) {
-        SpringApplication.run(MediaServiceApplication.class, args);
-    }
-
+  static void main(String[] args) {
+    SpringApplication.run(MediaServiceApplication.class, args);
+  }
 }

@@ -5,8 +5,6 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
 @MapperConfig(
-        componentModel = MappingConstants.ComponentModel.SPRING,
-        unmappedSourcePolicy = ReportingPolicy.ERROR
-)
-public interface MapStructConfig {
-}
+    componentModel = MappingConstants.ComponentModel.SPRING,
+    unmappedSourcePolicy = ReportingPolicy.ERROR)
+public interface MapStructConfig {}
