@@ -29,9 +29,7 @@ jobs:
           cache: maven
 
       - name: Maven verify
-        run: mvn -B -Psecurity verify
-        env:
-          NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
+        run: mvn -B verify
 
       - name: SonarQube analysis
         run: mvn -B sonar:sonar
