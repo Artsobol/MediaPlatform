@@ -5,4 +5,4 @@ bash scripts/check-conflict-marker.sh
 bash scripts/check-debug-output.sh
 gitleaks protect --staged --verbose
 npx lint-staged
-mvn test
+mvn verify

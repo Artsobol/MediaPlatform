@@ -1,0 +1,99 @@
+version: 2
+
+updates:
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 5
+
+    labels:
+      - dependencies
+
+    commit-message:
+      prefix: "build"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 3
+
+    labels:
+      - ci
+
+    commit-message:
+      prefix: "ci"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 3
+
+    labels:
+      - docker
+
+    commit-message:
+      prefix: "build"
+
+  - package-ecosystem: "docker"
+    directory: "/media-service"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 3
+
+    labels:
+      - docker/media-service
+
+    commit-message:
+      prefix: "build"
+
+  - package-ecosystem: "maven"
+    directory: "/media-service"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 3
+
+    labels:
+      - media-service
+
+    commit-message:
+      prefix: "build"
+      
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "00:00"
+      timezone: "UTC"
+
+    open-pull-requests-limit: 3
+
+    labels:
+      - npm
+
+    commit-message:
+      prefix: "build"
+
