@@ -95,6 +95,13 @@
                     <configLocation>config/checkstyle/checkstyle.xml</configLocation>
                 </configuration>
             </plugin>
+
+            <!-- JaCoCo -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.15</version>
+            </plugin>
         </plugins>
     </build>
 
