@@ -19,6 +19,7 @@
         <spring.boot.version>4.0.6</spring.boot.version>
         <maven.compiler.release>${java.version}</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spotbugs-maven-plugin.version>4.10.2.0</spotbugs-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -49,6 +50,7 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <!-- Spotless -->
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -62,6 +64,16 @@
                         <formatAnnotations/>
                         <importOrder/>
                     </java>
+                </configuration>
+            </plugin>
+
+            <!-- SpotBugs -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs-maven-plugin.version}</version>
+                <configuration>
+                    <excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
                 </configuration>
             </plugin>
         </plugins>
