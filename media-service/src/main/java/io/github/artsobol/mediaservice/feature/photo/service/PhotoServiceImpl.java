@@ -105,7 +105,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
     log.debug("Fetching photo: photoId={}", photoId);
     return photoRepository
         .findActiveById(photoId)
-        .orElseThrow(() -> new NotFoundException("Photo with id=" + photoId + "  not found"));
+        .orElseThrow(() -> new NotFoundException("photo.not.found"));
   }
 
   private PhotoResponse getResponseWithUrl(Photo entity) {
