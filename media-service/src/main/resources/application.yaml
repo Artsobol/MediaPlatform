@@ -22,6 +22,11 @@ spring:
     change-log: classpath:/db/changelog/db.changelog-master.xml
 
 app:
+  i18n:
+    basename: classpath:i18n/messages/messages,classpath:i18n/errors/errors,classpath:i18n/validations/validations
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    cache-seconds: 0
   minio:
     endpoint: ${APP_MINIO_ENDPOINT:http://localhost:9000}
     public-endpoint: ${APP_MINIO_PUBLIC_ENDPOINT:${APP_MINIO_ENDPOINT:http://localhost:9000}}

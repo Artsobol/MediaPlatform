@@ -31,7 +31,8 @@ public class PhotoController {
   private final PhotoService photoService;
 
   @GetMapping("/{photoId}")
-  public PhotoResponse getById(@PathVariable("photoId") @Positive Long photoId) {
+  public PhotoResponse getById(
+      @PathVariable("photoId") @Positive(message = "{identifier.positive}") Long photoId) {
     return photoService.getById(photoId);
   }
 
@@ -52,13 +53,14 @@ public class PhotoController {
 
   @PatchMapping("/{photoId}")
   public PhotoResponse partiallyUpdate(
-      @PathVariable("photoId") @Positive Long photoId,
+      @PathVariable("photoId") @Positive(message = "{identifier.positive}") Long photoId,
       @RequestBody @Valid PhotoUpdateRequest photoUpdateRequest) {
     return photoService.updateBody(photoId, photoUpdateRequest);
   }
 
   @DeleteMapping("/{photoId}")
-  public ResponseEntity<Void> delete(@PathVariable("photoId") @Positive Long photoId) {
+  public ResponseEntity<Void> delete(
+      @PathVariable("photoId") @Positive(message = "{identifier.positive}") Long photoId) {
     photoService.delete(photoId);
 
     return ResponseEntity.noContent().build();
