@@ -9,6 +9,7 @@ import io.github.artsobol.mediaservice.feature.photo.dto.response.PhotoResponse;
 import io.github.artsobol.mediaservice.feature.photo.entity.Photo;
 import io.github.artsobol.mediaservice.feature.photo.mapper.PhotoMapper;
 import io.github.artsobol.mediaservice.feature.photo.repository.PhotoRepository;
+import io.github.artsobol.mediaservice.infrastructure.error.file.FileValidationService;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
   private final PhotoRepository photoRepository;
   private final PhotoMapper photoMapper;
   private final S3Service s3Service;
+  private final FileValidationService fileValidationService;
 
   @Override
   @Transactional
@@ -34,7 +36,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
         photoCreateRequest.title() != null && !photoCreateRequest.title().isBlank(),
         photoCreateRequest.description() != null && !photoCreateRequest.description().isBlank(),
         photoCreateRequest.photoDate() != null);
-
+    fileValidationService.validatePhoto(photoFile);
     Photo entity = Photo.create();
 
     entity.updateBody(
@@ -105,7 +107,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
     log.debug("Fetching photo: photoId={}", photoId);
     return photoRepository
         .findActiveById(photoId)
-        .orElseThrow(() -> new NotFoundException("photo.not.found"));
+        .orElseThrow(() -> new NotFoundException("photo.not.found", photoId));
   }
 
   private PhotoResponse getResponseWithUrl(Photo entity) {
