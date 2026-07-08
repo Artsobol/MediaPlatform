@@ -3,6 +3,7 @@ package io.github.artsobol.mediaservice.feature.photo.web;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -11,11 +12,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import io.github.artsobol.mediaservice.exception.http.NotFoundException;
 import io.github.artsobol.mediaservice.feature.photo.dto.request.PhotoCreateRequest;
 import io.github.artsobol.mediaservice.feature.photo.dto.request.PhotoUpdateRequest;
 import io.github.artsobol.mediaservice.feature.photo.dto.response.PhotoResponse;
 import io.github.artsobol.mediaservice.feature.photo.entity.PhotoStatus;
 import io.github.artsobol.mediaservice.feature.photo.service.PhotoService;
+import io.github.artsobol.mediaservice.infrastructure.error.file.FileValidationService;
+import io.github.artsobol.mediaservice.infrastructure.error.localization.MessageService;
 import java.time.LocalDate;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +37,8 @@ import tools.jackson.databind.ObjectMapper;
 class PhotoControllerTest {
 
   @MockitoBean private PhotoService photoService;
-
+  @MockitoBean private MessageService messageService;
+  @MockitoBean private FileValidationService fileValidationService;
   @Autowired private ObjectMapper objectMapper;
   @Autowired private MockMvc mockMvc;
 
@@ -64,6 +69,29 @@ class PhotoControllerTest {
         .andExpect(jsonPath("$.photoStatus").value(response.photoStatus().toString()));
 
     verify(photoService).getById(photoId);
+  }
+
+  @Test
+  @DisplayName("GET /{photoId}: photo not exists - returns 404 and body")
+  void getPhotoById_photoNotExists_returns404AndBody() throws Exception {
+    // given
+    Long photoId = 1L;
+    when(photoService.getById(photoId))
+        .thenThrow(new NotFoundException("photo.not.found", photoId));
+
+    String message = "Photo with id=" + photoId + " not found";
+    when(messageService.createMessage(eq("photo.not.found"), any())).thenReturn(message);
+
+    // when + then
+    mockMvc
+        .perform(get("/photos/{photoId}", photoId))
+        .andExpect(status().isNotFound())
+        .andExpect(jsonPath("$.status").value(404))
+        .andExpect(jsonPath("$.errorCode").value("photo.not.found"))
+        .andExpect(jsonPath("$.message").value(message));
+
+    verify(photoService).getById(photoId);
+    verify(messageService).createMessage(any(), any());
   }
 
   @Test
@@ -146,6 +174,38 @@ class PhotoControllerTest {
         .andExpect(jsonPath("$.photoStatus").value(response.photoStatus().toString()));
 
     verify(photoService).create(eq(request), any(MultipartFile.class));
+  }
+
+  @Test
+  @DisplayName("POST: invalid request - returns 400 and body")
+  void createPhoto_invalidRequest_returns400AndBody() throws Exception {
+    // given
+    PhotoCreateRequest request = new PhotoCreateRequest("", "", LocalDate.of(2020, 2, 2));
+    when(messageService.resolveValidationMessage(any())).thenReturn("Title must not be blank");
+    when(messageService.createMessage(eq("validation.error"), any()))
+        .thenReturn("Validation error");
+    MockMultipartFile metadata =
+        new MockMultipartFile(
+            "metadata",
+            "",
+            MediaType.APPLICATION_JSON_VALUE,
+            objectMapper.writeValueAsBytes(request));
+    MockMultipartFile file =
+        new MockMultipartFile(
+            "file", "photo.jpg", MediaType.IMAGE_JPEG_VALUE, new byte[] {1, 2, 3});
+
+    // when + then
+    mockMvc
+        .perform(multipart("/photos").file(metadata).file(file))
+        .andExpect(status().isBadRequest())
+        .andExpect(jsonPath("$.status").value(400))
+        .andExpect(jsonPath("$.error").value("Bad Request"))
+        .andExpect(jsonPath("$.message").value("Validation error"))
+        .andExpect(jsonPath("$.path").value("/photos"))
+        .andExpect(jsonPath("$.errors[0].field").value("title"))
+        .andExpect(jsonPath("$.errors[0].message").value("Title must not be blank"));
+
+    verifyNoInteractions(photoService);
   }
 
   @Test
