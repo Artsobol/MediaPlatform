@@ -27,6 +27,17 @@ app:
     encoding: UTF-8
     fallback-to-system-locale: false
     cache-seconds: 0
+  upload:
+    max-file-size: 10MB
+    allowed-content-types:
+      - image/jpeg
+      - image/png
+      - image/webp
+    allowed-extensions:
+      - .jpg
+      - .jpeg
+      - .png
+      - .webp
   minio:
     endpoint: ${APP_MINIO_ENDPOINT:http://localhost:9000}
     public-endpoint: ${APP_MINIO_PUBLIC_ENDPOINT:${APP_MINIO_ENDPOINT:http://localhost:9000}}

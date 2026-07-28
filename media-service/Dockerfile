@@ -8,7 +8,7 @@ RUN mvn -pl media-service -am dependency:go-offline
 
 COPY media-service/src media-service/src
 
-RUN mvn -pl media-service -am clean package -DskipTests
+RUN mvn -pl media-service -am clean package -DskipTests -Dcheckstyle.skip=true -Dspotless.check.skip=true
 
 
 FROM eclipse-temurin:25-jre

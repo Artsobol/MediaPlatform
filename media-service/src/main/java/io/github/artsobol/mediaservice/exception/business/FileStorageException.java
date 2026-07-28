@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 public class FileStorageException extends BaseException {
 
-  public FileStorageException(String messageKey, Object... args) {
-    super(messageKey, messageKey, HttpStatus.NOT_FOUND, Map.of(), null, args);
+  public FileStorageException(String messageKey, Throwable cause, Object... args) {
+    super(messageKey, messageKey, HttpStatus.NOT_FOUND, Map.of(), cause, args);
   }
 }
