@@ -35,6 +35,11 @@ app:
     encoding: UTF-8
     fallback-to-system-locale: false
     cache-seconds: 0
+  retryable-task:
+    limit: 100
+    retry-delay: 30s
+  scheduler-config:
+    delay: 1000
   upload:
     max-file-size: 10MB
     allowed-content-types:
