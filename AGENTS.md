@@ -4,9 +4,12 @@ Instructions for agents and assistants working in this repository.
 
 ## Project Context
 
-This is a Java/Spring microservice project named `media-platform`. It is intended to become a media platform for photo and video content: uploading, storing, processing, and serving media files.
+This is a Java/Spring microservice project named `media-platform`. It is intended to become a media platform for photo
+and video content: uploading, storing, processing, and serving media files.
 
-Current repository state: a root Maven parent project without connected modules. Do not claim that APIs, services, Docker Compose, databases, or authentication are already implemented unless the corresponding files exist in the repository.
+Current repository state: a root Maven parent project without connected modules. Do not claim that APIs, services,
+Docker Compose, databases, or authentication are already implemented unless the corresponding files exist in the
+repository.
 
 ## General Rules
 
@@ -30,7 +33,8 @@ Current repository state: a root Maven parent project without connected modules.
 
 ## Architecture Guidelines
 
-The planned platform may include services for media uploads, metadata, file processing, API Gateway, and authentication. The exact service set should be decided as the project evolves.
+The planned platform may include services for media uploads, metadata, file processing, API Gateway, and authentication.
+The exact service set should be decided as the project evolves.
 
 When adding a new service:
 
@@ -42,7 +46,8 @@ When adding a new service:
 
 ## ExecPlans
 
-When writing complex features or significant refactors, use an ExecPlan, as described in `PLANS.md`, from design to implementation.
+When writing complex features or significant refactors, use an ExecPlan, as described in `PLANS.md`, from design to
+implementation.
 
 ## Code review
 
