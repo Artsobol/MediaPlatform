@@ -31,6 +31,17 @@ public class CommonControllerAdvice {
   private final MessageService messageService;
   private final FileValidationService fileValidationService;
 
+  private static @NonNull ErrorResponse getErrorResponse(
+      HttpServletRequest request, HttpStatus status, String errorCode, String message) {
+    return new ErrorResponse(
+        Instant.now(),
+        status.value(),
+        status.getReasonPhrase(),
+        errorCode,
+        message,
+        request.getRequestURI());
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<ValidationErrorResponse> handleMethodArgumentNotValidException(
       MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -186,16 +197,5 @@ public class CommonControllerAdvice {
     }
 
     return propertyPath;
-  }
-
-  private static @NonNull ErrorResponse getErrorResponse(
-      HttpServletRequest request, HttpStatus status, String errorCode, String message) {
-    return new ErrorResponse(
-        Instant.now(),
-        status.value(),
-        status.getReasonPhrase(),
-        errorCode,
-        message,
-        request.getRequestURI());
   }
 }
