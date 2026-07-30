@@ -7,9 +7,13 @@ import io.github.artsobol.mediaservice.feature.photo.dto.request.PhotoCreateRequ
 import io.github.artsobol.mediaservice.feature.photo.dto.request.PhotoUpdateRequest;
 import io.github.artsobol.mediaservice.feature.photo.dto.response.PhotoResponse;
 import io.github.artsobol.mediaservice.feature.photo.entity.Photo;
+import io.github.artsobol.mediaservice.feature.photo.event.PhotoProcessingRequestedEvent;
 import io.github.artsobol.mediaservice.feature.photo.mapper.PhotoMapper;
 import io.github.artsobol.mediaservice.feature.photo.repository.PhotoRepository;
 import io.github.artsobol.mediaservice.infrastructure.error.file.FileValidationService;
+import io.github.artsobol.mediaservice.infrastructure.outbox.entity.RetryableTaskType;
+import io.github.artsobol.mediaservice.infrastructure.outbox.service.RetryableTaskService;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +29,7 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
 
   private final PhotoRepository photoRepository;
   private final PhotoMapper photoMapper;
+  private final RetryableTaskService retryableTaskService;
   private final S3Service s3Service;
   private final FileValidationService fileValidationService;
 
@@ -55,6 +60,19 @@ public class PhotoServiceImpl implements PhotoService, PhotoFinder {
 
     s3Service.upload(originalImageKey, photoFile);
     saved.updateOriginalImageKey(originalImageKey);
+    saved.successUpload();
+
+    PhotoProcessingRequestedEvent event =
+        new PhotoProcessingRequestedEvent(
+            UUID.randomUUID(),
+            saved.getId(),
+            saved.getOriginalImageKey(),
+            photoFile.getContentType(),
+            Instant.now());
+
+    retryableTaskService.createRetryableTask(
+        event, RetryableTaskType.SEND_PROCESSING_PHOTO_REQUEST);
+
     log.info(
         "Photo uploaded: photoId={} originalImageKey={} photoStatus={}",
         saved.getId(),
