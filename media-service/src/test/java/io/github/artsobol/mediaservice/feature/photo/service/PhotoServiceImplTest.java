@@ -17,6 +17,7 @@ import io.github.artsobol.mediaservice.feature.photo.entity.Photo;
 import io.github.artsobol.mediaservice.feature.photo.mapper.PhotoMapper;
 import io.github.artsobol.mediaservice.feature.photo.repository.PhotoRepository;
 import io.github.artsobol.mediaservice.infrastructure.error.file.FileValidationService;
+import io.github.artsobol.mediaservice.infrastructure.outbox.service.RetryableTaskService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -34,18 +35,16 @@ import org.springframework.test.util.ReflectionTestUtils;
 @ExtendWith(MockitoExtension.class)
 class PhotoServiceImplTest {
 
+  private static final String PHOTO_URL =
+      "https://storage.example.com/photos/1/original/photo.jpeg";
+  private static final Long PHOTO_ID = 1L;
+  private static final String ORIGINAL_IMAGE_KEY = "photos/1/original/photo.jpeg";
   @Mock private PhotoRepository photoRepository;
   @Mock private PhotoMapper photoMapper;
   @Mock private S3Service s3Service;
   @Mock private FileValidationService fileValidationService;
+  @Mock private RetryableTaskService retryableTaskService;
   @InjectMocks private PhotoServiceImpl photoService;
-
-  private static final String PHOTO_URL =
-      "https://storage.example.com/photos/1/original/photo.jpeg";
-
-  private static final Long PHOTO_ID = 1L;
-
-  private static final String ORIGINAL_IMAGE_KEY = "photos/1/original/photo.jpeg";
 
   @Test
   @DisplayName("getById: photo exists - returns photo response")
