@@ -80,7 +80,7 @@ updates:
 
     commit-message:
       prefix: "build"
-      
+
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
